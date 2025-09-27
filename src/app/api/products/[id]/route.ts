@@ -17,10 +17,24 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params
-    const { name, slug, price, originalPrice, stock, category, rating, reviews, description, img, badge } = await request.json()
-    await execute('UPDATE products SET name = ?, slug = ?, price = ?, originalPrice = ?, stock = ?, category = ?, rating = ?, reviews = ?, description = ?, img = ?, badge = ? WHERE id = ?', [name, slug, price, originalPrice, stock, category, rating, reviews, description, img, badge, id])
-    return NextResponse.json({ id, name, slug, price, originalPrice, stock, category, rating, reviews, description, img, badge })
+    const data = await request.json()
+    
+    const name = data.name
+    const slug = data.slug || data.name.toLowerCase().replace(/\s+/g, '-')
+    const price = parseFloat(data.price) || 0
+    const originalPrice = data.originalPrice ? parseFloat(data.originalPrice) : null
+    const stock = parseInt(data.stock) || 0
+    const category = data.category ? parseInt(data.category) : null
+    const rating = data.rating ? parseFloat(data.rating) : null
+    const reviews = data.reviews ? parseInt(data.reviews) : null
+    const description = data.description || null
+    const img = data.img || null
+    const badge = data.badge || null
+    
+    await execute('UPDATE products SET name = ?, slug = ?, price = ?, originalPrice = ?, stock = ?, category = ?, rating = ?, reviews = ?, description = ?, img = ?, badge = ? WHERE id = ?', [name, slug, price, originalPrice, stock, category, rating, reviews, description, img, badge, parseInt(id)])
+    return NextResponse.json({ id: parseInt(id), name, slug, price, originalPrice, stock, category, rating, reviews, description, img, badge })
   } catch (error) {
+    console.error('Error updating product:', error)
     return NextResponse.json({ error: 'Failed to update product' }, { status: 500 })
   }
 }

@@ -295,7 +295,6 @@ export default function Admin() {
       const url = await handleImageUpload(file)
       if (url) {
         setProductForm({ ...productForm, img: url })
-        // Reset the input value to allow selecting the same file again
         e.target.value = ''
       }
     }
@@ -498,48 +497,54 @@ export default function Admin() {
                   <div className="space-y-2 md:col-span-3">
                     <label className="block text-sm font-medium text-gray-700">Gambar Produk</label>
                     <div className="space-y-3">
-                      {/* URL Input */}
-                      <div>
-                        <label className="block text-xs text-gray-600 mb-1">URL Gambar</label>
+                      <input
+                        type="text"
+                        name="img"
+                        value={productForm.img}
+                        onChange={handleProductInputChange}
+                        placeholder="Masukkan URL gambar atau upload file"
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white transition-all duration-300 focus:shadow-lg"
+                      />
+                      <div className="flex items-center space-x-3">
                         <input
-                          type="text"
-                          name="img"
-                          value={productForm.img}
-                          onChange={handleProductInputChange}
-                          placeholder="https://example.com/image.jpg"
-                          className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white transition-all duration-300 focus:shadow-lg"
+                          type="file"
+                          accept="image/*"
+                          onChange={handleFileChange}
+                          disabled={uploadingImage}
+                          className="flex-1 text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 disabled:opacity-50"
                         />
+                        {uploadingImage && (
+                          <div className="flex items-center space-x-2">
+                            <svg className="w-4 h-4 animate-spin text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                            </svg>
+                            <span className="text-sm text-gray-600">Uploading...</span>
+                          </div>
+                        )}
                       </div>
-
-                      {/* OR Divider */}
-                      <div className="flex items-center">
-                        <div className="flex-1 border-t border-gray-300"></div>
-                        <span className="px-3 bg-white text-sm text-gray-500">ATAU</span>
-                        <div className="flex-1 border-t border-gray-300"></div>
-                      </div>
-
-                      {/* File Upload */}
-                      <div>
-                        <label className="block text-xs text-gray-600 mb-1">Upload Gambar</label>
-                        <div className="flex items-center space-x-3">
-                          <input
-                            type="file"
-                            accept="image/*"
-                            onChange={handleFileChange}
-                            disabled={uploadingImage}
-                            className="flex-1 text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 disabled:opacity-50"
-                          />
-                          {uploadingImage && (
-                            <div className="flex items-center space-x-2">
-                              <svg className="w-4 h-4 animate-spin text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                              </svg>
-                              <span className="text-sm text-gray-600">Uploading...</span>
-                            </div>
-                          )}
+                      <p className="text-xs text-gray-500">Upload file akan mengganti URL yang ada. Maksimal 5MB. Format: JPEG, PNG, WebP</p>
+                      {productForm.img && (
+                        <div className="mt-3">
+                          <label className="block text-xs text-gray-600 mb-2">Pratinjau:</label>
+                          <div className="relative inline-block">
+                            <img
+                              src={productForm.img}
+                              alt="Preview"
+                              className="w-24 h-24 object-cover rounded-lg border border-gray-300"
+                              onError={(e) => {
+                                e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDJDMTMuMSAyIDE0IDIuOSAxNCA0VjE2QzE0IDE3LjEgMTMuMSAxOCA5LjkgMTlIMTQuMUMxNS4xIDE5IDE2IDE4LjEgMTYgMTdWNFoiIGZpbGw9IiM5Q0E0QUYiLz4KPHBhdGggZD0iTTEwIDJDOS45IDIgOSA0LjkgOSA2VjE2QzkgMTYuMSAxMC4xIDE3IDEwIDE3VjJDMTAgMiAxMCAyIDEwIDJaIiBmaWxsPSIjOUNBNEFGIi8+CjxwYXRoIGQ9Ik0xNCAyQzE0IDIgMTQgMiAxNCAyVjJDMTQgMiAxNCAyIDE0IDJaIiBmaWxsPSIjOUNBNEFGIi8+Cjwvc3ZnPgo='
+                              }}
+                            />
+                            <button
+                              type="button"
+                              onClick={() => setProductForm({ ...productForm, img: '' })}
+                              className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-red-600"
+                            >
+                              ×
+                            </button>
+                          </div>
                         </div>
-                        <p className="text-xs text-gray-500 mt-1">Maksimal 5MB. Format: JPEG, PNG, WebP</p>
-                      </div>
+                      )}
                     </div>
                   </div>
                   <div className="space-y-2 md:col-span-3">

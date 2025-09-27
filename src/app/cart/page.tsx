@@ -71,7 +71,7 @@ export default function Cart() {
                       </svg>
                     </button>
 
-                    <span className="px-4 py-2 min-w-[60px] text-center font-medium text-gray-900">
+                    <span className="px-4 py-2 min-w-[60px] text-center font-medium">
                       {item.quantity}
                     </span>
 
