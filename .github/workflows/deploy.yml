@@ -33,7 +33,7 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           port: 22
           source: ".next/,public/,package.json,package-lock.json"
-          target: "/root/astrea-commerce/"
+          target: "/home/astro/astrea-ecommerce/"
 
       - uses: appleboy/ssh-action@v0.1.9
         with:
@@ -42,7 +42,7 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           port: 22
           script: |
-            cd /root/astrea-commerce
+            cd /home/astro/astrea-ecommerce
 
             npm ci --production
 
@@ -51,15 +51,15 @@ jobs:
             DB_HOST=${{ secrets.DB_HOST }}
             DB_USER=${{ secrets.DB_USER }}
             DB_PASSWORD=${{ secrets.DB_PASSWORD }}
-            DB_NAME=${{ secrets.DB_NAME }}
+            DB_NAME=astrea-ecommerce
             EOF
 
             # If app already exists in PM2, restart it; otherwise start new
-            pm2 describe astrea-commerce >/dev/null 2>&1
+            pm2 describe astrea-ecommerce >/dev/null 2>&1
             if [ $? -eq 0 ]; then
-              pm2 restart astrea-commerce
+              pm2 restart astrea-ecommerce
             else
-              pm2 start npm --name astrea-commerce -- start
+              pm2 start npm --name astrea-ecommerce -- start
             fi
 
             # Save PM2 process list to restart on server reboot
