@@ -247,14 +247,15 @@ export default function Admin() {
       })
 
       if (!response.ok) {
-        throw new Error('Upload failed')
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Upload failed')
       }
 
       const data = await response.json()
       return data.url
     } catch (error) {
       console.error('Error uploading image:', error)
-      alert('Error uploading image')
+      alert(`Error uploading image: ${error instanceof Error ? error.message : 'Unknown error'}`)
       return null
     } finally {
       setUploadingImage(false)
