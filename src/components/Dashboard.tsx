@@ -190,7 +190,7 @@ export default function Dashboard() {
       {searchQuery && (
         <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
           <h2 className="font-semibold text-green-900 mb-2">
-            Hasil Pencarian: "{searchQuery}"
+            Hasil Pencarian: &quot;{searchQuery}&quot;
           </h2>
           <p className="text-green-700">Ditemukan {displayProducts.length} produk yang cocok</p>
         </div>
