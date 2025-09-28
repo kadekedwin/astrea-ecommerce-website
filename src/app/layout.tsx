@@ -5,7 +5,7 @@ import { Footer } from "./components/Footer";
 import { CartProvider } from "./context/CartContext";
 
 export const metadata: Metadata = {
-  title: "Mochae Commerce",
+  title: "Astrea Commerce",
   description: "E-commerce platform",
   icons: {
     icon: "/favicon.ico",

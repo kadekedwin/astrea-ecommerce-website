@@ -39,9 +39,9 @@ export function Footer() {
                   target.style.display = 'none';
                 }}
               />
-              <h3 className="text-lg font-semibold">Mochae</h3>
+              <h3 className="text-lg font-semibold">Astrea</h3>
             </div>
-            <p className="text-gray-300">Sebuah warung minuman dan kopi berkualitas tinggi dan rasa yang segar dan nikmat</p>
+            <p className="text-gray-300">Sebuah toko baju dengan kualitas tinggi dan fokus ke style ala retro</p>
           </div>
           <div>
             <h3 className="text-lg font-semibold mb-4">Kategori</h3>
@@ -53,12 +53,12 @@ export function Footer() {
           </div>
           <div>
             <h3 className="text-lg font-semibold mb-4">Kontak</h3>
-            <p className="text-gray-300">Email: info@Mochae.com</p>
+            <p className="text-gray-300">Email: info@Astrea.com</p>
             <p className="text-gray-300">Phone: +62 123 456 789</p>
           </div>
         </div>
         <div className="border-t border-gray-700 mt-8 pt-4 text-center text-gray-300">
-          <p>© 2025 Mochae E-Commerce | Version 2.0</p>
+          <p>© 2025 Astrea E-Commerce | Version 2.0</p>
         </div>
       </div>
     </footer>

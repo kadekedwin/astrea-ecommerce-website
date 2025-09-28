@@ -20,7 +20,7 @@ export default function Navbar() {
           <Link href="/" className="flex items-center space-x-2">
             <img
               src="/logo.png"
-              alt="Mochae Logo"
+              alt="Astrea Logo"
               className="w-10 h-10 object-contain"
               onError={(e) => {
                 const target = e.target as HTMLImageElement;
@@ -30,9 +30,9 @@ export default function Navbar() {
               }}
             />
             <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center" style={{display: 'none'}}>
-              <span className="text-white font-bold text-lg">M</span>
+              <span className="text-white font-bold text-lg">A</span>
             </div>
-            <span className="font-bold text-xl text-gray-800">Mochae</span>
+            <span className="font-bold text-xl text-gray-800">Astrea</span>
           </Link>
 
           <div className="hidden md:flex items-center space-x-8">
