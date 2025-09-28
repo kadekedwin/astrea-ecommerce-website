@@ -5,7 +5,7 @@ export async function GET() {
   try {
     const products = await query('SELECT * FROM products')
     return NextResponse.json(products)
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to fetch products' }, { status: 500 })
   }
 }
@@ -13,7 +13,7 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const data = await request.json()
-    
+
     const name = data.name
     const slug = data.slug || data.name.toLowerCase().replace(/\s+/g, '-')
     const price = parseFloat(data.price) || 0
@@ -25,11 +25,10 @@ export async function POST(request: NextRequest) {
     const description = data.description || null
     const img = data.img || null
     const badge = data.badge || null
-    
+
     const result = await execute('INSERT INTO products (name, slug, price, originalPrice, stock, category, rating, reviews, description, img, badge) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [name, slug, price, originalPrice, stock, category, rating, reviews, description, img, badge]) as {insertId: number}
     return NextResponse.json({ id: result.insertId, name, slug, price, originalPrice, stock, category, rating, reviews, description, img, badge })
-  } catch (error) {
-    console.error('Error creating product:', error)
+  } catch {
     return NextResponse.json({ error: 'Failed to create product' }, { status: 500 })
   }
 }

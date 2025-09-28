@@ -7,7 +7,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     const { name, slug } = await request.json()
     await execute('UPDATE categories SET name = ?, slug = ? WHERE id = ?', [name, slug, id])
     return NextResponse.json({ id, name, slug })
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to update category' }, { status: 500 })
   }
 }
@@ -17,7 +17,7 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
     const { id } = await params
     await execute('DELETE FROM categories WHERE id = ?', [id])
     return NextResponse.json({ message: 'Category deleted' })
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to delete category' }, { status: 500 })
   }
 }

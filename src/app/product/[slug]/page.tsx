@@ -46,7 +46,6 @@ export default function ProductDetail() {
           const foundProduct = products.find((p: Product) => p.slug === slug);
 
           if (foundProduct) {
-            // Fetch categories to get category name
             const categoriesRes = await fetch('/api/categories');
             if (categoriesRes.ok) {
               const categories: Category[] = await categoriesRes.json();
@@ -56,7 +55,6 @@ export default function ProductDetail() {
               };
               setProduct(productWithCategory);
 
-              // Get related products
               const related = products
                 .filter((p: Product) => p.category === foundProduct.category && p.id !== foundProduct.id)
                 .slice(0, 4)

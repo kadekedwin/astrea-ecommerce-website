@@ -53,7 +53,4 @@ export async function initDatabase() {
       FOREIGN KEY (category) REFERENCES categories(id)
     )
   `)
-
-  const categories = await query('SELECT COUNT(*) as count FROM categories') as {count: number}[]
-  const products = await query('SELECT COUNT(*) as count FROM products') as {count: number}[]
 }

@@ -32,7 +32,6 @@ export default function Admin() {
   const [editingProduct, setEditingProduct] = useState<Product | null>(null)
   const [editingCategory, setEditingCategory] = useState<Category | null>(null)
   const [uploadingImage, setUploadingImage] = useState(false)
-  const [uploadingCategoryImage, setUploadingCategoryImage] = useState(false)
   const [productForm, setProductForm] = useState({
     name: '',
     slug: '',
@@ -56,7 +55,6 @@ export default function Admin() {
     fetchCategories()
   }, [])
 
-  // Auto-scroll to form when editing
   useEffect(() => {
     if (editingProduct) {
       setTimeout(() => {
@@ -262,54 +260,12 @@ export default function Admin() {
     }
   }
 
-  const handleCategoryImageUpload = async (file: File): Promise<string | null> => {
-    if (!file) return null
-
-    setUploadingCategoryImage(true)
-    try {
-      const formData = new FormData()
-      formData.append('image', file)
-
-      const response = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
-      })
-
-      if (!response.ok) {
-        throw new Error('Upload failed')
-      }
-
-      const data = await response.json()
-      return data.url
-    } catch (error) {
-      console.error('Error uploading image:', error)
-      alert('Error uploading image')
-      return null
-    } finally {
-      setUploadingCategoryImage(false)
-    }
-  }
-
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
       const url = await handleImageUpload(file)
       if (url) {
         setProductForm({ ...productForm, img: url })
-        e.target.value = ''
-      }
-    }
-  }
-
-  const handleCategoryFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (file) {
-      // For categories, we'll use a default category image URL
-      const url = await handleCategoryImageUpload(file)
-      if (url) {
-        // Categories don't have image fields in the current schema, so we'll skip this for now
-        alert('Category image uploaded successfully, but categories don\'t currently support images in the database schema.')
-        // Reset the input value to allow selecting the same file again
         e.target.value = ''
       }
     }
@@ -555,7 +511,7 @@ export default function Admin() {
                 <div className="mt-6 flex gap-3">
                   <button
                     type="submit"
-                    className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-all duration-300 transform hover:scale-105 hover:shadow-lg font-medium"
+                    className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-all duration-300 hover:shadow-lg font-medium"
                   >
                     {editingProduct ? 'Perbarui Produk' : 'Tambah Produk'}
                   </button>
@@ -563,7 +519,7 @@ export default function Admin() {
                     <button
                       type="button"
                       onClick={handleProductCancel}
-                      className="bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 transition-all duration-300 transform hover:scale-105 font-medium"
+                      className="bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 transition-all duration-300 font-medium"
                     >
                       Batal
                     </button>
@@ -589,8 +545,8 @@ export default function Admin() {
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
-                      {products.map((product, index) => (
-                        <tr key={product.id} className="hover:bg-gray-50 transition-colors duration-200 animate-fade-in" style={{ animationDelay: `${index * 50}ms` }}>
+                      {products.map((product) => (
+                        <tr key={product.id} className="hover:bg-gray-50 transition-colors duration-200 animate-fade-in">
                           <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{product.id}</td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             <div className="flex items-center">
@@ -633,13 +589,13 @@ export default function Admin() {
                             <div className="flex space-x-2">
                               <button
                                 onClick={() => handleProductEdit(product)}
-                                className="bg-blue-600 text-white px-3 py-1 rounded-lg hover:bg-blue-700 transition-all duration-300 transform hover:scale-105 text-xs font-medium"
+                                className="bg-blue-600 text-white px-3 py-1 rounded-lg hover:bg-blue-700 transition-all duration-300 text-xs font-medium"
                               >
                                 Edit
                               </button>
                               <button
                                 onClick={() => handleProductDelete(product.id)}
-                                className="bg-red-600 text-white px-3 py-1 rounded-lg hover:bg-red-700 transition-all duration-300 transform hover:scale-105 text-xs font-medium"
+                                className="bg-red-600 text-white px-3 py-1 rounded-lg hover:bg-red-700 transition-all duration-300 text-xs font-medium"
                               >
                                 Hapus
                               </button>
@@ -717,39 +673,10 @@ export default function Admin() {
                     />
                   </div>
                 </div>
-
-                {/* Category Image Upload (Future feature) */}
-                <div className="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
-                  <h3 className="text-sm font-medium text-gray-700 mb-3">Gambar Kategori (Fitur Mendatang)</h3>
-                  <div className="space-y-3">
-                    <div>
-                      <label className="block text-xs text-gray-600 mb-1">Upload Gambar Kategori</label>
-                      <div className="flex items-center space-x-3">
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={handleCategoryFileChange}
-                          disabled={uploadingCategoryImage}
-                          className="flex-1 text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-green-50 file:text-green-700 hover:file:bg-green-100 disabled:opacity-50"
-                        />
-                        {uploadingCategoryImage && (
-                          <div className="flex items-center space-x-2">
-                            <svg className="w-4 h-4 animate-spin text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                            </svg>
-                            <span className="text-sm text-gray-600">Uploading...</span>
-                          </div>
-                        )}
-                      </div>
-                      <p className="text-xs text-gray-500 mt-1">Maksimal 5MB. Format: JPEG, PNG, WebP</p>
-                      <p className="text-xs text-amber-600 mt-1">⚠️ Fitur ini akan tersedia setelah update database schema</p>
-                    </div>
-                  </div>
-                </div>
                 <div className="mt-6 flex gap-3">
                   <button
                     type="submit"
-                    className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-all duration-300 transform hover:scale-105 hover:shadow-lg font-medium"
+                    className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-all duration-300 hover:shadow-lg font-medium"
                   >
                     {editingCategory ? 'Perbarui Kategori' : 'Tambah Kategori'}
                   </button>
@@ -757,7 +684,7 @@ export default function Admin() {
                     <button
                       type="button"
                       onClick={handleCategoryCancel}
-                      className="bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 transition-all duration-300 transform hover:scale-105 font-medium"
+                      className="bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 transition-all duration-300 font-medium"
                     >
                       Batal
                     </button>
@@ -781,8 +708,8 @@ export default function Admin() {
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
-                      {categories.map((category, index) => (
-                        <tr key={category.id} className="hover:bg-gray-50 transition-colors duration-200 animate-fade-in" style={{ animationDelay: `${index * 50}ms` }}>
+                      {categories.map((category) => (
+                        <tr key={category.id} className="hover:bg-gray-50 transition-colors duration-200 animate-fade-in">
                           <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{category.id}</td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             <div className="flex items-center">
@@ -799,13 +726,13 @@ export default function Admin() {
                             <div className="flex space-x-2">
                               <button
                                 onClick={() => handleCategoryEdit(category)}
-                                className="bg-blue-600 text-white px-3 py-1 rounded-lg hover:bg-blue-700 transition-all duration-300 transform hover:scale-105 text-xs font-medium"
+                                className="bg-blue-600 text-white px-3 py-1 rounded-lg hover:bg-blue-700 transition-all duration-300 text-xs font-medium"
                               >
                                 Edit
                               </button>
                               <button
                                 onClick={() => handleCategoryDelete(category.id)}
-                                className="bg-red-600 text-white px-3 py-1 rounded-lg hover:bg-red-700 transition-all duration-300 transform hover:scale-105 text-xs font-medium"
+                                className="bg-red-600 text-white px-3 py-1 rounded-lg hover:bg-red-700 transition-all duration-300 text-xs font-medium"
                               >
                                 Hapus
                               </button>

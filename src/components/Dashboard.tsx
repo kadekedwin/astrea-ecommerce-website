@@ -46,7 +46,6 @@ export default function Dashboard() {
           const productsData = await productsRes.json();
           const categoriesData = await categoriesRes.json();
 
-          // Join products with category names
           const productsWithCategories = productsData.map((product: Product) => ({
             ...product,
             category_name: categoriesData.find((cat: Category) => cat.id === product.category)?.name || 'Unknown'
@@ -55,8 +54,7 @@ export default function Dashboard() {
           setProducts(productsWithCategories);
           setCategories(categoriesData);
         }
-      } catch (error) {
-        console.error('Error fetching data:', error);
+      } catch {
       } finally {
         setLoading(false);
       }
@@ -65,7 +63,6 @@ export default function Dashboard() {
     fetchData();
   }, []);
 
-  // Simple filter function
   let displayProducts = products;
 
   if (searchQuery) {
@@ -81,7 +78,6 @@ export default function Dashboard() {
     );
   }
 
-  // Simple sort function
   if (sortBy === "price-low") {
     displayProducts = [...displayProducts].sort((a, b) => a.price - b.price);
   } else if (sortBy === "price-high") {

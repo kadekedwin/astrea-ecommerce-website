@@ -9,7 +9,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       return NextResponse.json({ error: 'Product not found' }, { status: 404 })
     }
     return NextResponse.json(products[0])
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to fetch product' }, { status: 500 })
   }
 }
@@ -33,8 +33,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     
     await execute('UPDATE products SET name = ?, slug = ?, price = ?, originalPrice = ?, stock = ?, category = ?, rating = ?, reviews = ?, description = ?, img = ?, badge = ? WHERE id = ?', [name, slug, price, originalPrice, stock, category, rating, reviews, description, img, badge, parseInt(id)])
     return NextResponse.json({ id: parseInt(id), name, slug, price, originalPrice, stock, category, rating, reviews, description, img, badge })
-  } catch (error) {
-    console.error('Error updating product:', error)
+  } catch {
     return NextResponse.json({ error: 'Failed to update product' }, { status: 500 })
   }
 }
@@ -44,7 +43,7 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
     const { id } = await params
     await execute('DELETE FROM products WHERE id = ?', [id])
     return NextResponse.json({ message: 'Product deleted' })
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to delete product' }, { status: 500 })
   }
 }
