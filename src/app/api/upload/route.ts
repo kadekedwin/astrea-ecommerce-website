@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
 
     // Generate unique filename
     const timestamp = Date.now()
-    const randomString = Math.random().toString(36).substring(2, 15)
+    const randomString = Math.random().toString(36).substring(2, 15).replace(/[^a-zA-Z0-9]/g, '')
     const extension = file.type === 'image/jpeg' ? '.jpg' :
                      file.type === 'image/png' ? '.png' :
                      file.type === 'image/webp' ? '.webp' : '.jpg'
