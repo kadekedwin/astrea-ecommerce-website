@@ -232,30 +232,100 @@ export default function Admin() {
   }
 
   const handleImageUpload = async (file: File): Promise<string | null> => {
-    if (!file) return null
+    console.log('🚀 Starting image upload...')
+    console.log('📁 File details:', {
+      name: file?.name,
+      size: file?.size,
+      type: file?.type
+    })
+    
+    if (!file) {
+      console.log('❌ No file provided')
+      return null
+    }
 
     setUploadingImage(true)
+    
     try {
+      console.log('📤 Creating FormData...')
       const formData = new FormData()
       formData.append('image', file)
+      console.log('✅ FormData created successfully')
 
+      console.log('🌐 Making fetch request to /api/upload...')
       const response = await fetch('/api/upload', {
         method: 'POST',
         body: formData,
       })
+      
+      console.log('📡 Response received:', {
+        status: response.status,
+        statusText: response.statusText,
+        ok: response.ok,
+        headers: Object.fromEntries(response.headers.entries())
+      })
 
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || 'Upload failed')
+      // Check content type before parsing
+      const contentType = response.headers.get('content-type')
+      console.log('📋 Response content-type:', contentType)
+      
+      if (!contentType || !contentType.includes('application/json')) {
+        console.log('⚠️ Response is not JSON!')
+        const textResponse = await response.text()
+        console.log('📄 Raw response text:', textResponse.substring(0, 500))
+        throw new Error(`Server returned non-JSON response. Content-Type: ${contentType}`)
       }
 
+      if (!response.ok) {
+        console.log('❌ Response not OK, attempting to parse error...')
+        try {
+          const errorData = await response.json()
+          console.log('🔍 Error data:', errorData)
+          throw new Error(errorData.error || `HTTP ${response.status}: Upload failed`)
+        } catch (parseError) {
+          console.log('❌ Failed to parse error response:', parseError)
+          throw new Error(`HTTP ${response.status}: Upload failed`)
+        }
+      }
+
+      console.log('✅ Response OK, parsing JSON...')
       const data = await response.json()
+      console.log('📊 Upload response data:', data)
+      
+      if (!data.url) {
+        console.log('⚠️ No URL in response data')
+        throw new Error('No URL returned from upload')
+      }
+      
+      console.log('🎉 Upload successful! URL:', data.url)
       return data.url
+      
     } catch (error) {
-      console.error('Error uploading image:', error)
-      alert(`Error uploading image: ${error instanceof Error ? error.message : 'Unknown error'}`)
+      console.error('💥 Upload error occurred:', error)
+      console.error('🔍 Error details:', {
+        name: error instanceof Error ? error.name : 'Unknown',
+        message: error instanceof Error ? error.message : String(error),
+        stack: error instanceof Error ? error.stack : 'No stack trace'
+      })
+      
+      // More specific error messages
+      let alertMessage = 'Error uploading image: '
+      
+      if (error instanceof TypeError && error.message.includes('fetch')) {
+        alertMessage += 'Network error - could not connect to server'
+      } else if (error instanceof Error && error.message.includes('JSON')) {
+        alertMessage += 'Server returned invalid response (not JSON)'
+      } else if (error instanceof Error && error.message.includes('non-JSON')) {
+        alertMessage += 'Server returned HTML instead of JSON - check API endpoint'
+      } else {
+        alertMessage += error instanceof Error ? error.message : 'Unknown error'
+      }
+      
+      alert(alertMessage)
       return null
+      
     } finally {
+      console.log('🏁 Upload process finished')
       setUploadingImage(false)
     }
   }
