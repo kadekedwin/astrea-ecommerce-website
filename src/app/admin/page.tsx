@@ -498,14 +498,6 @@ export default function Admin() {
                   <div className="space-y-2 md:col-span-3">
                     <label className="block text-sm font-medium text-gray-700">Gambar Produk</label>
                     <div className="space-y-3">
-                      <input
-                        type="text"
-                        name="img"
-                        value={productForm.img}
-                        onChange={handleProductInputChange}
-                        placeholder="Masukkan URL gambar atau upload file"
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white transition-all duration-300 focus:shadow-lg"
-                      />
                       <div className="flex items-center space-x-3">
                         <input
                           type="file"
@@ -523,7 +515,7 @@ export default function Admin() {
                           </div>
                         )}
                       </div>
-                      <p className="text-xs text-gray-500">Upload file akan mengganti URL yang ada. Maksimal 5MB. Format: JPEG, PNG, WebP</p>
+                      <p className="text-xs text-gray-500">Maksimal 5MB. Format: JPEG, PNG, WebP</p>
                       {productForm.img && (
                         <div className="mt-3">
                           <label className="block text-xs text-gray-600 mb-2">Pratinjau:</label>
