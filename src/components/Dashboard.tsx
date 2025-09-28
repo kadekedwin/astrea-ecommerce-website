@@ -67,8 +67,8 @@ export default function Dashboard() {
 
   if (searchQuery) {
     displayProducts = displayProducts.filter(product =>
-      product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      product.description.toLowerCase().includes(searchQuery.toLowerCase())
+      (product.name?.toLowerCase() || '').includes(searchQuery.toLowerCase()) ||
+      (product.description?.toLowerCase() || '').includes(searchQuery.toLowerCase())
     );
   }
 
